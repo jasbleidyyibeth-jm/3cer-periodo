@@ -1,0 +1,90 @@
+Algoritmo ServiRutaExpress
+    // Declaraciones
+    Definir cantidad_vehiculos, contador, tipo_vehiculo, cant_motos, cant_autos Como Entero
+    Definir monto_insumos, cobro_base, costo_total, descuento, total_final, recaudo_total, total_descuentos, promedio_recaudo Como Real
+
+    // Inicialización
+    recaudo_total <- 0.0
+    total_descuentos <- 0.0
+    cant_motos <- 0
+    cant_autos <- 0
+
+    // Apertura de turno
+    Repetir
+        Escribir "=== SERVIRUTA EXPRESS ==="
+        Escribir "Cantidad de vehículos a atender (N > 0):"
+        Leer cantidad_vehiculos
+        Si cantidad_vehiculos <= 0 Entonces
+            Escribir "Error: Debe ser un número positivo. Intente nuevamente."
+        FinSi
+    Hasta Que cantidad_vehiculos > 0
+
+    // Procesamiento por vehículo
+    Para contador <- 1 Hasta cantidad_vehiculos Con Paso 1 Hacer
+        Escribir ""
+        Escribir "---------------------------------------"
+        Escribir "Vehículo ", contador, " de ", cantidad_vehiculos
+        Escribir "---------------------------------------"
+
+        // Validar tipo de vehículo
+        Escribir "Tipo (1=Moto | 2=Auto):"
+        Leer tipo_vehiculo
+        Mientras tipo_vehiculo <> 1 Y tipo_vehiculo <> 2 Hacer
+            Escribir "Inválido. Ingrese 1 o 2:"
+            Leer tipo_vehiculo
+        FinMientras
+
+        // Validar monto de insumos
+        Escribir "Monto en insumos ($):"
+        Leer monto_insumos
+        Mientras monto_insumos < 0.0 Hacer
+            Escribir "No puede ser negativo. Ingrese valor válido:"
+            Leer monto_insumos
+        FinMientras
+
+        // Tarifa base y conteo
+        Si tipo_vehiculo = 1 Entonces
+            cobro_base <- 25000.0
+            cant_motos <- cant_motos + 1
+        SiNo
+            cobro_base <- 45000.0
+            cant_autos <- cant_autos + 1
+        FinSi
+
+        // Cálculos
+        costo_total <- cobro_base + monto_insumos
+        Si costo_total > 150000.0 Entonces
+            descuento <- costo_total * 0.10
+            Escribir "-> Aplica 10% de descuento"
+        SiNo
+            descuento <- 0.0
+            Escribir "-> No aplica descuento"
+        FinSi
+        total_final <- costo_total - descuento
+
+        // Liquidación individual
+        Escribir "Mano de obra: $", cobro_base
+        Escribir "Insumos:      $", monto_insumos
+        Escribir "Descuento:    $", descuento
+        Escribir "TOTAL:        $", total_final
+
+        // Acumulados
+        recaudo_total <- recaudo_total + total_final
+        total_descuentos <- total_descuentos + descuento
+    FinPara
+
+    // Reporte final
+    promedio_recaudo <- recaudo_total / cantidad_vehiculos
+    Escribir ""
+    Escribir "======================================="
+    Escribir "       REPORTE DE CIERRE DE TURNO      "
+    Escribir "======================================="
+    Escribir "Vehículos atendidos: ", cantidad_vehiculos
+    Escribir "  Motocicletas:      ", cant_motos
+    Escribir "  Automóviles:       ", cant_autos
+    Escribir "---------------------------------------"
+    Escribir "Recaudo total neto:  $", recaudo_total
+    Escribir "Total descuentos:    $", total_descuentos
+    Escribir "Promedio por vehículo:$", promedio_recaudo
+    Escribir "======================================="
+FinAlgoritmo

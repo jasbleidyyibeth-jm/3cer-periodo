@@ -1,0 +1,107 @@
+Algoritmo CinemaMultiplex
+
+    Definir capacidad, disponibles, ocupados Como Entero
+    Definir opcion, categoria, cantidad Como Entero
+    Definir precio, subtotal, descuento, total Como Real
+    Definir boletosGeneral, boletosEstudiante, transaccionesDescuento Como Entero
+    Definir recaudo Como Real
+
+    boletosGeneral <- 0
+    boletosEstudiante <- 0
+    transaccionesDescuento <- 0
+    recaudo <- 0
+    ocupados <- 0
+
+    Escribir "Ingrese la capacidad de la sala (1 a 80):"
+    Leer capacidad
+
+    Mientras capacidad < 1 O capacidad > 80 Hacer
+        Escribir "Capacidad invalida. Ingrese un valor de 1 a 80:"
+        Leer capacidad
+    FinMientras
+
+    disponibles <- capacidad
+
+    Repetir
+
+        Escribir "1. Vender boletos"
+        Escribir "2. Estado de la sala"
+        Escribir "3. Cerrar"
+        Leer opcion
+
+        Segun opcion Hacer
+
+            1:
+                Escribir "1. General"
+                Escribir "2. Estudiante"
+                Leer categoria
+
+                Si categoria = 1 O categoria = 2 Entonces
+
+                    Escribir "Cantidad de boletos:"
+                    Leer cantidad
+
+                    Mientras cantidad <= 0 Hacer
+                        Escribir "Cantidad invalida. Ingrese nuevamente:"
+                        Leer cantidad
+                    FinMientras
+
+                    Si cantidad <= disponibles Entonces
+
+                        Si categoria = 1 Entonces
+                            precio <- 12000
+                        SiNo
+                            precio <- 8000
+                        FinSi
+
+                        subtotal <- cantidad * precio
+
+                        Si cantidad >= 4 Entonces
+                            descuento <- subtotal * 0.10
+                            transaccionesDescuento <- transaccionesDescuento + 1
+                        SiNo
+                            descuento <- 0
+                        FinSi
+
+                        total <- subtotal - descuento
+
+                        recaudo <- recaudo + total
+                        disponibles <- disponibles - cantidad
+                        ocupados <- ocupados + cantidad
+
+                        Si categoria = 1 Entonces
+                            boletosGeneral <- boletosGeneral + cantidad
+                        SiNo
+                            boletosEstudiante <- boletosEstudiante + cantidad
+                        FinSi
+
+                        Escribir "Total a pagar: $", total
+
+                    SiNo
+                        Escribir "No hay suficientes asientos."
+                    FinSi
+
+                SiNo
+                    Escribir "Categoria invalida."
+                FinSi
+
+            2:
+                Escribir "Asientos ocupados: ", ocupados
+                Escribir "Asientos disponibles: ", disponibles
+
+            3:
+                Escribir "CIERRE DE CAJA"
+                Escribir "Total recaudado: $", recaudo
+                Escribir "Boletos General: ", boletosGeneral
+                Escribir "Boletos Estudiante: ", boletosEstudiante
+                Escribir "Transacciones con descuento: ", transaccionesDescuento
+                Escribir "Cerrando sistema..."
+
+            De Otro Modo:
+                Escribir "Opcion invalida."
+
+        FinSegun
+
+    Hasta Que opcion = 3
+
+FinAlgoritmo

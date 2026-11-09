@@ -1,0 +1,105 @@
+Funcion edad_valida <- ValidarEdad()
+    Definir edad_valida Como Entero
+    Escribir "Ingrese la edad del paciente (0-110 años):"
+    Leer edad_valida
+    Mientras edad_valida < 0 O edad_valida > 110 Hacer
+        Escribir "ERROR: Edad entre 0 y 110. Intente nuevamente:"
+        Leer edad_valida
+    FinMientras
+FinFuncion
+
+Funcion imc_valido <- ValidarIMC()
+    Definir imc_valido Como Real
+    Escribir "Ingrese el IMC del paciente (10.0 - 60.0):"
+    Leer imc_valido
+    Mientras imc_valido < 10.0 O imc_valido > 60.0 Hacer
+        Escribir "ERROR: IMC fuera de rango. Intente nuevamente:"
+        Leer imc_valido
+    FinMientras
+FinFuncion
+
+Funcion monto_final <- CalcularTarifa(edad, imc)
+    Definir monto_base, descuento, recargo Como Real
+    monto_base <- 45000
+    descuento <- 0
+    recargo <- 0
+    Si edad < 12 O edad >= 65 Entonces
+        descuento <- monto_base * 0.20
+    FinSi
+    Si imc >= 30.0 Entonces
+        recargo <- 12000
+    FinSi
+    monto_final <- (monto_base - descuento) + recargo
+FinFuncion
+
+SubProceso RegistrarPaciente(edad, imc, recaudo Por Referencia, vulnerables Por Referencia, riesgo_imc Por Referencia, max_imc Por Referencia)
+    recaudo <- recaudo + CalcularTarifa(edad, imc)
+    Si edad < 12 O edad >= 65 Entonces
+        vulnerables <- vulnerables + 1
+    FinSi
+    Si imc >= 30.0 Entonces
+        riesgo_imc <- riesgo_imc + 1
+    FinSi
+    Si imc > max_imc Entonces
+        max_imc <- imc
+    FinSi
+FinSubProceso
+
+SubProceso MostrarInforme(recaudo, total_pacientes, vulnerables, riesgo_imc, max_imc)
+    Definir porcentaje_vulnerables Como Real
+    Escribir " "
+    Escribir "=================================================="
+    Escribir "    INFORME EPIDEMIOLOGICO - SALUDINTEGRAL IPS"
+    Escribir "=================================================="
+    Escribir "Total dinero cobrado: $", recaudo
+    Escribir "Total pacientes atendidos: ", total_pacientes
+    Si total_pacientes > 0 Entonces
+        porcentaje_vulnerables <- (vulnerables / total_pacientes) * 100
+        Escribir "Pacientes con subsidio de edad: ", vulnerables
+        Escribir "Porcentaje con subsidio: ", porcentaje_vulnerables, "%"
+    Sino
+        Escribir "Pacientes con subsidio de edad: 0"
+        Escribir "Porcentaje con subsidio: 0%"
+    FinSi
+    Escribir "Pacientes con IMC >= 30.0 (riesgo): ", riesgo_imc
+    Escribir "IMC mas alto registrado: ", max_imc
+    Escribir "=================================================="
+FinSubProceso
+
+Algoritmo SistemaTriajeIPS
+    Definir opcion, edad, total_pacientes, vulnerables, riesgo_imc Como Entero
+    Definir imc, recaudo, max_imc Como Real
+    
+    recaudo <- 0
+    total_pacientes <- 0
+    vulnerables <- 0
+    riesgo_imc <- 0
+    max_imc <- 0
+    
+    Repetir
+        Escribir " "
+        Escribir "============ SISTEMA DE TRIJE ============"
+        Escribir "1. Evaluar Paciente"
+        Escribir "2. Ver Informe Epidemiologico del Dia"
+        Escribir "3. Cerrar Turno"
+        Escribir "Seleccione una opcion (1-3):"
+        Leer opcion
+        
+        Segun opcion Hacer
+            1:
+                Escribir "--- EVALUACION DE PACIENTE ---"
+                edad <- ValidarEdad()
+                imc <- ValidarIMC()
+                Escribir "Edad: ", edad, " años | IMC: ", imc
+                Escribir "Monto a pagar: $", CalcularTarifa(edad, imc)
+                RegistrarPaciente(edad, imc, recaudo, vulnerables, riesgo_imc, max_imc)
+                total_pacientes <- total_pacientes + 1
+            2:
+                MostrarInforme(recaudo, total_pacientes, vulnerables, riesgo_imc, max_imc)
+            3:
+                Escribir "Cerrando turno... Jornada finalizada!"
+            De Otro Modo:
+                Escribir "Opcion invalida. Intente nuevamente."
+        FinSegun
+    Hasta Que opcion = 3
+FinAlgoritmo
